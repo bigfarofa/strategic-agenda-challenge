@@ -28,6 +28,11 @@ function Home() {
   let areLastWordsWhiteSpaceRef = useRef(false);
   let startIndexToScanRef = useRef(0);
 
+
+  /**
+   * We add a debounced function to not fetch suggestions immediatly,
+   * preventing overload to the API.
+   */
   let fetchWords = useCallback(_.debounce(function(text: string, lang: string){
     
     console.log("FETCH NOW");
