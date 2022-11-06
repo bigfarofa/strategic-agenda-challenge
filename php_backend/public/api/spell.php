@@ -4,29 +4,12 @@ require_once __DIR__ . "/../../strategic_agenda_api/st_agenda_api_wrapper/STAgen
 require_once __DIR__ . "/../../utils/cors.php";
 
 
-//cors();
-
-
-
-$http_origin = $_SERVER['SERVER_NAME'];
-var_dump($http_origin);
-$allowed_domains = array(
-  '127.0.0.1',
-  'localhost',
-);
-
-if (in_array($http_origin, $allowed_domains)) {  
-  header("Access-Control-Allow-Origin: http://$http_origin:3000");
-
-  header("Access-Control-Allow-Headers: *");
-  header("Access-Control-Allow-Methods: *");
-}
-
+cors();
 
 // Access-Control headers are received during OPTIONS requests
 
 $method = $_SERVER['REQUEST_METHOD'];
-var_dump($method);
+
 if ($method == "POST") {
   $text = $_POST["text"];
   $lang = $_POST["lang"];
