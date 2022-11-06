@@ -8,9 +8,8 @@ require_once __DIR__ . "/../../utils/cors.php";
 
 
 
-$http_origin = $_SERVER['REMOTE_ADDR'];
+$http_origin = $_SERVER['SERVER_NAME'];
 var_dump($http_origin);
-var_dump($_SERVER);
 $allowed_domains = array(
   '127.0.0.1',
   'localhost',

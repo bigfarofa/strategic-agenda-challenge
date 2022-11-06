@@ -10,7 +10,7 @@ export interface IPostSpell {
 
 export function postSpell(data: IPostSpell){
   let apiConfig = new APIWrapperConfig();
-  let url = apiConfig.hostname() + "/api/spell.php";
+  let url = apiConfig.origin() + "/api/spell.php";
   return axios.post(url, data);
 }
 
