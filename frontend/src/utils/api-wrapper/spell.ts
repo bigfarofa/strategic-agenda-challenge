@@ -8,6 +8,27 @@ export interface IPostSpell {
 }
 
 
+export interface IPostSpellSuggestion {
+  original: string,
+  suggestions: string[]
+}
+
+export type IPostSpellResponse = IPostSpellSuggestion[];
+export type IPostSpellSuggestionsHashMap = {[original: string] : string[]};
+
+export function convertAPISpellSuggestionsToHashMap(arr: IPostSpellResponse){
+  let hashMap: IPostSpellSuggestionsHashMap = {};
+  for(let elem of arr) {
+    hashMap[elem.original] = elem.suggestions;
+  }
+  /* ALTERNATIVE. While t might be faster, it's less readable.
+  hashMap = arr.reduce<IPostSpellSuggestionsHashMap>((acc, e) => Object.assign(acc, {[e.original]: e.suggestions}), {});
+  */
+
+  return hashMap;
+}
+
+
 export function postSpell(data: IPostSpell){
   let apiConfig = new APIWrapperConfig();
   let url = apiConfig.origin() + "/api/spell.php";
