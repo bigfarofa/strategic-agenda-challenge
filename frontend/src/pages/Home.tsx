@@ -4,6 +4,7 @@ import {Sources, DeltaStatic} from 'quill';
 import 'react-quill/dist/quill.snow.css';
 import usePrevious from "../hooks/usePrevious";
 import _ from "lodash";
+import {postSpell} from "../utils/api-wrapper/spell";
 function onChangeQuill(){
 
 }
@@ -36,6 +37,15 @@ function Home() {
   let fetchWords = useCallback(_.debounce(function(text: string, lang: string){
     
     console.log("FETCH NOW");
+
+    postSpell({text: text, lang: lang})
+    .then((res) => {
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.error(err);
+    })
+    
     
     
   }, 2000), []);
