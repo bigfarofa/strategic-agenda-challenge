@@ -1,6 +1,8 @@
 import Quill from "quill";
 import Popover from "bootstrap/js/dist/popover";
 import { DOMElement } from "react";
+import isDescendant from "../../dom/is-descendant";
+import BuildParchment from "./BuildParchment";
 let Parchment = Quill.import("parchment");
 //import {Attributor, ClassAttributor, InlineBlot} from "parchment";
 let Inline = Quill.import("blots/inline");
@@ -26,7 +28,7 @@ export let SpanWrapper = "";
 export class WavyBlot extends Inline {
   static create(data: {original: string, suggestions: string[]}) {
     let node = super.create() as Element;
-    node.classList.add('text-wavy');
+    node.classList.add('text-wavy', 'ql-error-word');
     node.setAttribute("data-original", data.original);
 
     if (data.suggestions) {
@@ -69,21 +71,13 @@ export class WavyBlot extends Inline {
         trigger: "click",
         html: true,
         content: popoverBody,
-        animation: false
+        animation: false,
+        customClass: "suggestion-popover"
       })
 
-      /*
-      let mousedownCb = function(e: MouseEvent){
-        let target = e.target as Element;
-        console.log("mouseup");
-        if(target.contains(node)){
-          console.log("OUT OF ZONE");
-          popover.hide();
-          
-        }
-      };
-      document.addEventListener("mouseup", mousedownCb);
-      */
+      
+      
+      
       
      
     }
@@ -97,4 +91,32 @@ export class WavyBlot extends Inline {
   static tagName: string = 'wavy';
 }
 
-export default WavyBlot;
+export class WavyBuildParchment extends BuildParchment {
+  build(): void {
+    Quill.register(WavyBlot, true);
+    
+    let mousedownCb = function(e: MouseEvent){
+      let target = e.target as Element;
+      let onePopover = document.querySelector(".suggestion-popover");
+      if (onePopover) {
+        if(!isDescendant(onePopover, target)){
+          let allWordErrors = document.querySelectorAll(".ql-error-word");
+          for(let i = 0; i < allWordErrors.length; i++){
+            let wordError = allWordErrors[i];
+            let popOverInstance = Popover.getInstance(wordError);
+            
+            if (popOverInstance) {
+              popOverInstance.hide();
+            }
+          }
+          
+          
+        }
+      }
+      
+      
+    };
+    window.addEventListener("mouseup", mousedownCb);
+  }
+}
+export default WavyBuildParchment;
