@@ -20,7 +20,7 @@ if ($method == "POST") {
   echo json_encode($response);
   
 } else if($method == "OPTIONS") {
-  //http_response_code(200);
+  http_response_code(200);
 } else {
   http_response_code(404);
 }
