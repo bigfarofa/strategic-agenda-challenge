@@ -1,5 +1,5 @@
 import Quill from "quill";
-
+import Popover from "bootstrap/js/dist/popover";
 let Parchment = Quill.import("parchment");
 //import {Attributor, ClassAttributor, InlineBlot} from "parchment";
 let Inline = Quill.import("blots/inline");
@@ -23,9 +23,23 @@ export let SpanWrapper = "";
 
 
 export class WavyBlot extends Inline {
-  static create(text: string) {
+  static create(data: {original: string, suggestions: string[]}) {
     let node = super.create();
     node.classList.add('text-wavy');
+    node.setAttribute("data-original", data.original);
+
+    if (data.suggestions) {
+      node.setAttribute("data-suggestions", data.suggestions.join(","));
+      node.setAttribute("data-bs-container", "body");
+      node.setAttribute("data-bs-toggle", "popover");
+      node.setAttribute("data-bs-trigger", "hover");
+      node.setAttribute("data-bs-placement", "bottom");
+      node.setAttribute("data-bs-content", data.suggestions.join("<br/>"));
+      new Popover(node);
+    }
+    
+    
+
     return node;
   }
 

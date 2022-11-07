@@ -48,6 +48,7 @@
     ]
   },
   "devDependencies": {
+    "@types/bootstrap": "^5.2.5",
     "@types/lodash": "^4.14.188"
   }
 }
