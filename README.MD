@@ -1,4 +1,4 @@
-# Challenge Strategic Arena - Lucas Gomes
+# Challenge Strategic Agenda  - Lucas Gomes
 
 
 ## Pre-Requisities
@@ -12,7 +12,7 @@ You will need to have the PHP command line avaialble. This can be done by placin
 
 Once you have the PHP CLI, you can run the server.
 
-To run the server, execute the `run-server.cmd` script.
+To run the server, execute the `run-server.cmd` script (`run-server.sh` for Linux).
 
 
 ## How to run the web application?
