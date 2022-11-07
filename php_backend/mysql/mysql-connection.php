@@ -74,7 +74,7 @@ class MySQLHandler {
     if ($stmt) {
       $stmt->execute();
       $result = $stmt->get_result();
-      $result->fetch_all(MYSQLI_ASSOC)
+      $result->fetch_all(MYSQLI_ASSOC);
       $stmt->close();
       return $result;
     } else {
