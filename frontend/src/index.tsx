@@ -5,6 +5,9 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import buildParchments from './utils/quill/parchments/build-parchments';
 import "bootstrap/dist/css/bootstrap.css";
+import "@fortawesome/fontawesome-free/css/fontawesome.css";
+import "@fortawesome/fontawesome-free/css/brands.css";
+import "@fortawesome/fontawesome-free/css/solid.css";
 buildParchments();
 
 const root = ReactDOM.createRoot(

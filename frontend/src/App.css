@@ -36,6 +36,27 @@
 
 
 
+/*
+.word-spell-suggestion-popover {
+  --bs-popover-max-width: 200px;
+  --bs-popover-border-color: var(--bs-primary);
+  --bs-popover-header-bg: var(--bs-primary);
+  --bs-popover-header-color: var(--bs-white);
+  --bs-popover-body-padding-x: 0;
+  --bs-popover-body-padding-y: 0;
+}
+*/
+
+.suggestion-list-popover{
+  margin-left: -1rem;
+  margin-right: -1rem;
+}
+
+.suggestion-list-popover li {
+  border: 0px;
+}
+
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
