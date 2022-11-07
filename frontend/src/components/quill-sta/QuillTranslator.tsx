@@ -114,11 +114,13 @@ function QuillTranslator(props: IQuillTranslatorProps) {
         while(regxRes !== null) {
           let indexFound = regxRes.index;
           let endIndex = wordPossiblyWrong.length - 1;
-          let suggestionsJoined = wordSpell.suggestions.join(",")
+          let suggestionsJoined = wordSpell.suggestions.join(",");
+
           editor.formatText(indexFound, wordPossiblyWrong.length, {
             wavy: {
               original: wordPossiblyWrong,
-              suggestions: wordSpell.suggestions
+              suggestions: wordSpell.suggestions,
+              lang: lang
             }
           }, "api");
           regxRes = regx.exec(editorText);

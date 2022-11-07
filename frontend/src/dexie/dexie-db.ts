@@ -12,6 +12,7 @@ export interface ITableUserDictionary {
   id?: number;
   word: string;
   wordAttached: string;
+  lang: string;
 }
 
 export class MySubClassedDexie extends Dexie {
@@ -23,7 +24,7 @@ export class MySubClassedDexie extends Dexie {
     super('lucas_teste');
     this.version(1).stores({
       ignoredWords: '++id, word, lang',
-      userDictionary: '++id, word, wordAttached'
+      userDictionary: '++id, &[word+wordAttached+lang], word, wordAttached, lang'
     });
   }
 }
