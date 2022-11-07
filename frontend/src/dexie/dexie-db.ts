@@ -23,7 +23,7 @@ export class MySubClassedDexie extends Dexie {
   constructor() {
     super('lucas_teste');
     this.version(1).stores({
-      ignoredWords: '++id, word, lang',
+      ignoredWords: '++id, &[word+lang], word, lang',
       userDictionary: '++id, &[word+wordAttached+lang], word, wordAttached, lang'
     });
   }
