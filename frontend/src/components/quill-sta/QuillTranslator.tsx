@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 import usePrevious from "../../hooks/usePrevious";
 import _ from "lodash";
 import {postSpell, IPostSpellResponse, convertAPISpellSuggestionsToHashMap} from "../../utils/api-wrapper/spell";
-
+import {db} from '../../dexie/dexie-db';
 
 
 
@@ -95,37 +95,59 @@ function QuillTranslator(props: IQuillTranslatorProps) {
 
     postSpell({text: text, lang: lang})
     .then((res) => {
-      let data: IPostSpellResponse = JSON.parse(res.data) as IPostSpellResponse;
-      console.log("DATA", data);
-      let wordsThatHaveSuggetions = data.filter((e) => e.suggestions.length > 0);
-      console.log(wordsThatHaveSuggetions);
-      if (!reactQuillRef.current) {
-        console.log("NO REF");
-        return false;  
-      }
-      let editor = reactQuillRef.current.getEditor();
-      let editorText = editor.getText();
 
-      for(let wordSpell of wordsThatHaveSuggetions) {
-        let wordPossiblyWrong = wordSpell.original;
+      let asyncFun = async function(){
+        let data: IPostSpellResponse = JSON.parse(res.data) as IPostSpellResponse;
+        console.log("DATA", data);
+        let wordsThatHaveSuggetions = data.filter((e) => e.suggestions.length > 0);
+        console.log(wordsThatHaveSuggetions);
+        if (!reactQuillRef.current) {
+          console.log("NO REF");
+          return false;  
+        }
+        let editor = reactQuillRef.current.getEditor();
+        let editorText = editor.getText();
 
-        let regx = new RegExp(wordPossiblyWrong, "gi");
-        let regxRes = regx.exec(editorText);
-        while(regxRes !== null) {
-          let indexFound = regxRes.index;
-          let endIndex = wordPossiblyWrong.length - 1;
-          let suggestionsJoined = wordSpell.suggestions.join(",");
+        for(let wordSpell of wordsThatHaveSuggetions) {
+          let wordPossiblyWrong = wordSpell.original;
 
-          editor.formatText(indexFound, wordPossiblyWrong.length, {
-            wavy: {
-              original: wordPossiblyWrong,
-              suggestions: wordSpell.suggestions,
-              lang: lang
-            }
-          }, "api");
-          regxRes = regx.exec(editorText);
+          
+          let ignoredWord = await db.ignoredWords.where('[word+lang]').equals([wordPossiblyWrong, lang]).first();
+          if (ignoredWord) {
+            continue;
+          }
+          let wordInDictionary = await db.userDictionary.where({word: wordPossiblyWrong, lang: lang}).first();
+          if (wordInDictionary) {
+            continue;
+          }
+
+          let regx = new RegExp(wordPossiblyWrong, "gi");
+          let regxRes = regx.exec(editorText);
+          while(regxRes !== null) {
+            let indexFound = regxRes.index;
+            let endIndex = wordPossiblyWrong.length - 1;
+            let suggestionsJoined = wordSpell.suggestions.join(",");
+
+            editor.formatText(indexFound, wordPossiblyWrong.length, {
+              wavy: {
+                original: wordPossiblyWrong,
+                suggestions: wordSpell.suggestions,
+                lang: lang
+              }
+            }, "api");
+            regxRes = regx.exec(editorText);
+          }
         }
       }
+
+      asyncFun()
+      .then((res) => {
+
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+      
       
       
     })

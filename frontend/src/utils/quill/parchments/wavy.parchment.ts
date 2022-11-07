@@ -170,11 +170,19 @@ export class WavyBuildParchment extends BuildParchment {
             
             if (popOverInstance) {
               popOverInstance.hide();
+              
+
             }
           }
           
           
         }
+      }
+
+      let allPopovers = document.querySelectorAll(".suggestion-popover");
+      for(let i = 0; i < allPopovers.length; i++){
+        let popOverSource = allPopovers[i];
+        popOverSource.remove();
       }
       
       
