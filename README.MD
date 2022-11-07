@@ -10,7 +10,7 @@
 
 You will need to have the PHP command line avaialble. This can be done by placing the PHP binary into Environment Variables.
 
-Once you have the PHP cli, you can run the server.
+Once you have the PHP CLI, you can run the server.
 
 To run the server, execute the `run-server.cmd` script.
 
