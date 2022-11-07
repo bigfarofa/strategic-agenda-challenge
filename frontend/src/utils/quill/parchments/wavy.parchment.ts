@@ -1,5 +1,6 @@
 import Quill from "quill";
 import Popover from "bootstrap/js/dist/popover";
+import { DOMElement } from "react";
 let Parchment = Quill.import("parchment");
 //import {Attributor, ClassAttributor, InlineBlot} from "parchment";
 let Inline = Quill.import("blots/inline");
@@ -24,7 +25,7 @@ export let SpanWrapper = "";
 
 export class WavyBlot extends Inline {
   static create(data: {original: string, suggestions: string[]}) {
-    let node = super.create();
+    let node = super.create() as Element;
     node.classList.add('text-wavy');
     node.setAttribute("data-original", data.original);
 
@@ -32,10 +33,30 @@ export class WavyBlot extends Inline {
       node.setAttribute("data-suggestions", data.suggestions.join(","));
       node.setAttribute("data-bs-container", "body");
       node.setAttribute("data-bs-toggle", "popover");
-      node.setAttribute("data-bs-trigger", "hover");
       node.setAttribute("data-bs-placement", "bottom");
-      node.setAttribute("data-bs-content", data.suggestions.join("<br/>"));
-      new Popover(node);
+
+      let listNode = document.createElement("UL");
+      for(let suggestion of data.suggestions) {
+        let listElem = document.createElement("LI");
+        listElem.innerText = suggestion;
+        listNode.append(listElem);
+      }
+      //node.setAttribute("data-bs-content", data.suggestions.join("<br/>"));
+      let popover = new Popover(node, {trigger: "click", html: true, content: listNode, animation: false})
+
+      /*
+      let mousedownCb = function(e: MouseEvent){
+        let target = e.target as Element;
+        console.log("mousedown");
+        if(target.contains(node)){
+          console.log("OT OF ZONE");
+          popover.hide();
+          
+        }
+      };
+      document.addEventListener("mousedown", mousedownCb);
+      */
+     
     }
     
     
