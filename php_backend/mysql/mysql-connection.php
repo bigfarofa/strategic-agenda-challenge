@@ -64,11 +64,39 @@ class MySQLHandler {
     }
     $stmt->execute();
     $stmt->close();
+    $db->close();
   }
 
-  public static function generate_stmt($query){
+  public static function execute_select_stmt($query, $params, $arr){
     $db = MySQLHandler::get_connection();
-    return $db->prepare($query);
+    $stmt = $db->prepare($query);
+    call_user_func_array($stmt->bind_param, $params);
+    if ($stmt) {
+      $stmt->execute();
+      $result = $stmt->get_result();
+      $result->fetch_all(MYSQLI_ASSOC)
+      $stmt->close();
+      return $result;
+    } else {
+      throw new Exception($db->error);
+    }
+    $db->close();
+    
+  }
+
+  public static function execute_stmt($query, $params, $arr){
+    $db = MySQLHandler::get_connection();
+    $stmt = $db->prepare($query);
+    call_user_func_array($stmt->bind_param, $params);
+    if ($stmt) {
+      $stmt->execute();
+      $stmt->close();
+      return $result;
+    } else {
+      throw new Exception($db->error);
+    }
+    $db->close();
+    
   }
 
 }
