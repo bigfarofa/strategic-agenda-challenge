@@ -33,36 +33,12 @@ function Home() {
   let modulesRef = useRef({
     toolbar: {
       container: [
-        [{ 'language': ['PT', 'EN'] }],
         [{ 'header': [1, 2, false] }],
         ['bold', 'italic', 'underline','strike', 'blockquote'],
         [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
         ['link', 'image'],
         ['clean']
       ],
-      handlers: {
-        'language': function(value: string){
-          if (reactQuillRef.current && thisRef.current) {
-        
-            let thisDom = thisRef.current;
-            const placeholderPickerItems = Array.prototype.slice.call(thisDom.querySelectorAll('.ql-language .ql-picker-item'));
-    
-            placeholderPickerItems.forEach(item => item.textContent = item.dataset.value);
-            
-            let pickerLabel = thisDom.querySelector('.ql-language .ql-picker-label');
-            let newSpanElement = document.createElement("SPAN");
-            newSpanElement.innerHTML = pickerLabel.getAttribute("data-value");
-            if (pickerLabel) {
-              let existentSpanElement = pickerLabel.querySelector("span");
-              if (existentSpanElement) {
-                pickerLabel.removeChild(existentSpanElement);
-              }
-              pickerLabel.prepend(newSpanElement);
-            }
-            
-          }
-        }
-      }
     }
   });
 
@@ -113,35 +89,6 @@ function Home() {
     
   }, 2000), []);
 
-  useEffect(function(){
-    setTimeout(() => {
-      // We need to manually supply the HTML content of our custom dropdown list
-      
-      if (reactQuillRef.current && thisRef.current) {
-        
-        let thisDom = thisRef.current;
-        const placeholderPickerItems = Array.prototype.slice.call(thisDom.querySelectorAll('.ql-language .ql-picker-item'));
-
-        placeholderPickerItems.forEach(item => item.textContent = item.dataset.value);
-        
-        let pickerLabel = thisDom.querySelector('.ql-language .ql-picker-label');
-
-        let newSpanElement = document.createElement("SPAN");
-        newSpanElement.innerHTML = pickerLabel.getAttribute("data-value");
-        if (pickerLabel) {
-          let existentSpanElement = pickerLabel.querySelector("span");
-          if (existentSpanElement) {
-            pickerLabel.removeChild(existentSpanElement);
-          }
-          pickerLabel.prepend(newSpanElement);
-        }
-        reactQuillRef.current.getEditor().format('language', 'EN');
-      }
-      
-
-    }, 0);
-  }, []);
-
   let onChangeQuillCb = useCallback(function(content: string, delta: DeltaStatic, source: Sources, editor: ReactQuill.UnprivilegedEditor){
     
     fetchWords(editor.getText(), "fr");
@@ -151,14 +98,43 @@ function Home() {
 
   return (
     <div ref={thisRef}>
-      <ReactQuill
-      ref={reactQuillRef}
-      theme="snow"
-      value={value}
-      onChange={onChangeQuillCb}
-      modules = {modulesRef.current}
-      />
+      <div className="container">
+        <div className="row">
+          <div className="col-12">
+            <div className='row row-cols-sm-auto align-items-center justify-content-end'>
+              <div className="col-12">
+                <label>Language:</label>
+              </div>
+              <div className='col-12'>
+                <select className='form-control' style={{minWidth: "200px"}}>
+                  
+                  <option value="en-gb">English</option>
+                  <option value="it">Italian</option>
+                  <option value="it">French</option>
+                </select>
+              </div>
+              
+            </div>
+            <ReactQuill
+            ref={reactQuillRef}
+            theme="snow"
+            value={value}
+            onChange={onChangeQuillCb}
+            modules = {modulesRef.current}
+            />
+          </div>
+        </div>
+        <div className='row'>
+          <div className="col-12 col-md-6">
+            AA
+          </div>
+          <div className="col-12 col-md-6">
+            BB
+          </div>
+        </div>
+      </div>
     </div>
+    
   );
 }
 

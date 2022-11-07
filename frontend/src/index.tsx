@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import buildParchments from './utils/quill/parchments/build-parchments';
-
+import "bootstrap/dist/css/bootstrap.css";
 buildParchments();
 
 const root = ReactDOM.createRoot(
