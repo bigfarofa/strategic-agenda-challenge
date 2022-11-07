@@ -13,7 +13,6 @@ import QuillTranslator from '../components/quill-sta/QuillTranslator';
 function Home() {
   let [italianTranslatorLanguage, setItalianTranslatorLanguage] = useState<string>("it");
   let onItalianLangChange = useCallback(function(e: React.ChangeEvent<HTMLSelectElement>){
-    console.log("e", e);
     let value = e.target.value;
     setItalianTranslatorLanguage(value);
   }, [])

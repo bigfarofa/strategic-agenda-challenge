@@ -21,7 +21,7 @@ export class MySubClassedDexie extends Dexie {
   ignoredWords!: Table<ITableIgnoredWords>; 
   userDictionary!: Table<ITableUserDictionary>;
   constructor() {
-    super('lucas_teste');
+    super('lucas_test');
     this.version(1).stores({
       ignoredWords: '++id, &[word+lang], word, lang',
       userDictionary: '++id, &[word+wordAttached+lang], word, wordAttached, lang'
