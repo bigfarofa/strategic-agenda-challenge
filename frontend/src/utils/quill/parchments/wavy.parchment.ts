@@ -156,17 +156,17 @@ export class WavyBuildParchment extends BuildParchment {
 
             }
           }
+
+
+          let allPopovers = document.querySelectorAll(".suggestion-popover");
+          for(let i = 0; i < allPopovers.length; i++){
+            let popOverSource = allPopovers[i];
+            popOverSource.remove();
+          }
           
           
         }
       }
-
-      let allPopovers = document.querySelectorAll(".suggestion-popover");
-      for(let i = 0; i < allPopovers.length; i++){
-        let popOverSource = allPopovers[i];
-        popOverSource.remove();
-      }
-      
       
     };
     window.addEventListener("mouseup", mousedownCb);
