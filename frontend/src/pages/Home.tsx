@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useState, useRef, useEffect } from 'react';
 import ReactQuill from 'react-quill';
 import {Sources, DeltaStatic} from 'quill';
 import 'react-quill/dist/quill.snow.css';
@@ -27,8 +27,44 @@ function Home() {
   const [value, setValue] = useState('');
   const prevValue = usePrevious<string>(value);
   const reactQuillRef = useRef<ReactQuill>(null);
+  const thisRef = useRef<any>(null);
   let areLastWordsWhiteSpaceRef = useRef(false);
   let startIndexToScanRef = useRef(0);
+  let modulesRef = useRef({
+    toolbar: {
+      container: [
+        [{ 'language': ['PT', 'EN'] }],
+        [{ 'header': [1, 2, false] }],
+        ['bold', 'italic', 'underline','strike', 'blockquote'],
+        [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+        ['link', 'image'],
+        ['clean']
+      ],
+      handlers: {
+        'language': function(value: string){
+          if (reactQuillRef.current && thisRef.current) {
+        
+            let thisDom = thisRef.current;
+            const placeholderPickerItems = Array.prototype.slice.call(thisDom.querySelectorAll('.ql-language .ql-picker-item'));
+    
+            placeholderPickerItems.forEach(item => item.textContent = item.dataset.value);
+            
+            let pickerLabel = thisDom.querySelector('.ql-language .ql-picker-label');
+            let newSpanElement = document.createElement("SPAN");
+            newSpanElement.innerHTML = pickerLabel.getAttribute("data-value");
+            if (pickerLabel) {
+              let existentSpanElement = pickerLabel.querySelector("span");
+              if (existentSpanElement) {
+                pickerLabel.removeChild(existentSpanElement);
+              }
+              pickerLabel.prepend(newSpanElement);
+            }
+            
+          }
+        }
+      }
+    }
+  });
 
 
   /**
@@ -77,6 +113,35 @@ function Home() {
     
   }, 2000), []);
 
+  useEffect(function(){
+    setTimeout(() => {
+      // We need to manually supply the HTML content of our custom dropdown list
+      
+      if (reactQuillRef.current && thisRef.current) {
+        
+        let thisDom = thisRef.current;
+        const placeholderPickerItems = Array.prototype.slice.call(thisDom.querySelectorAll('.ql-language .ql-picker-item'));
+
+        placeholderPickerItems.forEach(item => item.textContent = item.dataset.value);
+        
+        let pickerLabel = thisDom.querySelector('.ql-language .ql-picker-label');
+
+        let newSpanElement = document.createElement("SPAN");
+        newSpanElement.innerHTML = pickerLabel.getAttribute("data-value");
+        if (pickerLabel) {
+          let existentSpanElement = pickerLabel.querySelector("span");
+          if (existentSpanElement) {
+            pickerLabel.removeChild(existentSpanElement);
+          }
+          pickerLabel.prepend(newSpanElement);
+        }
+        reactQuillRef.current.getEditor().format('language', 'EN');
+      }
+      
+
+    }, 0);
+  }, []);
+
   let onChangeQuillCb = useCallback(function(content: string, delta: DeltaStatic, source: Sources, editor: ReactQuill.UnprivilegedEditor){
     
     fetchWords(editor.getText(), "fr");
@@ -85,8 +150,14 @@ function Home() {
   }, [setValue]);
 
   return (
-    <div>
-      <ReactQuill ref={reactQuillRef} theme="snow" value={value} onChange={onChangeQuillCb} />
+    <div ref={thisRef}>
+      <ReactQuill
+      ref={reactQuillRef}
+      theme="snow"
+      value={value}
+      onChange={onChangeQuillCb}
+      modules = {modulesRef.current}
+      />
     </div>
   );
 }
