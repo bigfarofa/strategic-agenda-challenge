@@ -24,15 +24,53 @@ function isSentenceTerminator(){
 }
 
 
-
-function QuillTranslator() {
-
+export interface IQuillTranslatorProps {
+  language?: string,
+  onLanguageChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void,
+}
+function QuillTranslator(props: IQuillTranslatorProps) {
+  const {language} = props;
   const [value, setValue] = useState('');
   const prevValue = usePrevious<string>(value);
   const reactQuillRef = useRef<ReactQuill>(null);
   const thisRef = useRef<any>(null);
   let areLastWordsWhiteSpaceRef = useRef(false);
   let startIndexToScanRef = useRef(0);
+
+
+  // LANGUAGES BASED ON THE Language Code Identifiers(LCID)
+  // https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-lcid/70feba9f-294e-491e-b6eb-56532684c37f?source=recommendations
+  // 
+  let languagesOptions = useRef([
+    {value: "en-gb", label: "English-GB"},
+    {value: "it", label: "Italian"},
+    {value: "fr", label: "French"},
+  ]);
+
+  let _onLanguageChange = useCallback(function(){
+    
+    
+    if (props.onLanguageChange) {
+      console.log(arguments);
+      console.log(arguments[0]);
+      props.onLanguageChange.apply(null, arguments as unknown as [e: React.ChangeEvent<HTMLSelectElement>]);
+    }
+    
+  }, [onlanguagechange]);
+
+  useEffect(function(){
+    
+    
+    if (reactQuillRef.current && language) {
+      let editor = reactQuillRef.current.getEditor();
+      let text = editor.getText();
+      fetchWords(text, language);
+    }
+    
+  }, [language]);
+
+  
+
   let modulesRef = useRef({
     toolbar: {
       container: [
@@ -93,37 +131,36 @@ function QuillTranslator() {
   }, 2000), []);
 
   let onChangeQuillCb = useCallback(function(content: string, delta: DeltaStatic, source: Sources, editor: ReactQuill.UnprivilegedEditor){
-    
-    fetchWords(editor.getText(), "fr");
+    if (language) {
+      fetchWords(editor.getText(), language);
+    }
     setValue(content);
     
-  }, [setValue]);
+  }, [language]);
 
   return (
-    <div className="row" ref={thisRef}>
-      <div className="col-12">
-        <div className='row row-cols-sm-auto align-items-center justify-content-end'>
-          <div className="col-12">
-            <label>Language:</label>
-          </div>
-          <div className='col-12'>
-            <select className='form-control' style={{minWidth: "200px"}}>
-              
-              <option value="en-gb">English</option>
-              <option value="it">Italian</option>
-              <option value="it">French</option>
-            </select>
-          </div>
-          
+    <div ref={thisRef}>
+      
+      <div className='row row-cols-sm-auto align-items-center justify-content-end'>
+        <div className="col-12">
+          <label>Language:</label>
         </div>
-        <ReactQuill
-        ref={reactQuillRef}
-        theme="snow"
-        value={value}
-        onChange={onChangeQuillCb}
-        modules = {modulesRef.current}
-        />
+        <div className='col-12'>
+          <select defaultValue={language} onChange={_onLanguageChange} className='form-control' style={{minWidth: "200px"}}>
+            {languagesOptions.current.map((e) => 
+              <option key={e.value} value={e.value}>{e.label}</option>
+            )}
+          </select>
+        </div>
+        
       </div>
+      <ReactQuill
+      ref={reactQuillRef}
+      theme="snow"
+      value={value}
+      onChange={onChangeQuillCb}
+      modules = {modulesRef.current}
+      />
     </div>
     
   );
